@@ -3,11 +3,11 @@ FROM maven:3.8.5-openjdk-17 AS build
 WORKDIR /app
 
 # Copy pom.xml and download dependencies (improves build cache)
-COPY pom.xml /app/
+COPY demo/pom.xml /app/
 RUN mvn dependency:go-offline
 
 # Copy the rest of the source code
-COPY . /app
+COPY demo/. /app
 
 # Build the project and skip tests
 RUN mvn clean package -DskipTests
@@ -18,8 +18,6 @@ WORKDIR /app
 
 # Copy the jar from build stage
 COPY --from=build /app/target/*.jar app.jar
-
-
 
 # Run the application
 ENTRYPOINT ["java", "-jar", "app.jar"]
